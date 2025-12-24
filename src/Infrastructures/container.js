@@ -16,12 +16,15 @@ const CommentRepository = require('../Domains/comments/CommentRepository');
 const CommentRepositoryPostgres = require('./repository/CommentRepositoryPostgres');
 const ReplyRepository = require('../Domains/replies/ReplyRepository');
 const ReplyRepositoryPostgres = require('./repository/ReplyRepositoryPostgres');
+const LikeRepository = require('../Domains/likes/LikeRepository');
+const LikeRepositoryPostgres = require('./repository/LikeRepositoryPostgres');
 const AuthenticationRepository = require('../Domains/authentications/AuthenticationRepository');
 const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
 const PasswordHash = require('../Applications/security/PasswordHash');
 const BcryptPasswordHash = require('./security/BcryptPasswordHash');
 
 // use case
+const LikeUnlikeCommentUseCase = require('../Applications/use_case/LikeUnlikeCommentUseCase');
 const DeleteReplyUseCase = require('../Applications/use_case/DeleteReplyUseCase');
 const AddReplyUseCase = require('../Applications/use_case/AddReplyUseCase');
 const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseCase');
@@ -108,6 +111,20 @@ container.register([
     },
   },
   {
+    key: LikeRepository.name,
+    Class: LikeRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        {
+          concrete: nanoid,
+        },
+      ],
+    },
+  },
+  {
     key: PasswordHash.name,
     Class: BcryptPasswordHash,
     parameter: {
@@ -133,6 +150,35 @@ container.register([
 
 // registering use cases
 container.register([
+  {
+    key: LikeUnlikeCommentUseCase.name,
+    Class: LikeUnlikeCommentUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'likeRepository',
+          internal: LikeRepository.name,
+        },
+        {
+          name: 'commentRepository',
+          internal: CommentRepository.name,
+        },
+        {
+          name: 'userRepository',
+          internal: UserRepository.name,
+        },
+        {
+          name: 'threadRepository',
+          internal: ThreadRepository.name,
+        },
+        {
+          name: 'authenticationTokenManager',
+          internal: AuthenticationTokenManager.name,
+        },
+      ],
+    },
+  },
   {
     key: DeleteReplyUseCase.name,
     Class: DeleteReplyUseCase,
@@ -225,6 +271,10 @@ container.register([
         {
           name: 'replyRepository',
           internal: ReplyRepository.name,
+        },
+        {
+          name: 'likeRepository',
+          internal: LikeRepository.name,
         },
         {
           name: 'userRepository',
