@@ -1,6 +1,7 @@
 const Hapi = require('@hapi/hapi');
 const ClientError = require('../../Commons/exceptions/ClientError');
 const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTranslator');
+const likes = require('../../Interfaces/http/api/likes');
 const replies = require('../../Interfaces/http/api/replies');
 const comments = require('../../Interfaces/http/api/comments');
 const threads = require('../../Interfaces/http/api/threads');
@@ -32,6 +33,10 @@ const createServer = async (container) => {
     },
     {
       plugin: replies,
+      options: { container },
+    },
+    {
+      plugin: likes,
       options: { container },
     },
   ]);

@@ -34,6 +34,8 @@ DomainErrorTranslator._directories = {
   'ADD_COMMENT_USE_CASE.NOT_CONTAIN_AUTHENTICATION_HEADER': new AuthenticationError('Missing authentication'),
   'DELETE_COMMENT_USE_CASE.NOT_CONTAIN_AUTHENTICATION_HEADER': new AuthenticationError('Missing authentication'),
   'ADD_REPLY_USE_CASE.NOT_CONTAIN_AUTHENTICATION_HEADER': new AuthenticationError('Missing authentication'),
+  'DELETE_REPLY_USE_CASE.NOT_CONTAIN_AUTHENTICATION_HEADER': new AuthenticationError('Missing authentication'),
+  'LIKE_UNLIKE_COMMENT_USE_CASE.NOT_CONTAIN_AUTHENTICATION_HEADER': new AuthenticationError('Missing authentication'),
 };
 
 module.exports = DomainErrorTranslator;
