@@ -1,10 +1,11 @@
 class GetThreadUseCase {
   constructor({
-    threadRepository, commentRepository, replyRepository, userRepository,
+    threadRepository, commentRepository, replyRepository, likeRepository, userRepository,
   }) {
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
     this._replyRepository = replyRepository;
+    this._likeRepository = likeRepository;
     this._userRepository = userRepository;
   }
 
@@ -31,8 +32,12 @@ class GetThreadUseCase {
 
         const commentUsername = await this._userRepository.getUsernameById(commentOwner);
 
+        const likeCount = await this._likeRepository.getLikeCountsByCommentId(getComment.id);
+
         if (commentIsdelete === true) {
-          return { ...commentRest, content: '**komentar telah dihapus**', username: commentUsername };
+          return {
+            ...commentRest, content: '**komentar telah dihapus**', username: commentUsername, likeCount,
+          };
         }
 
         const getReplies = await this._replyRepository.getRepliesByCommentId(getComment.id);
@@ -55,7 +60,9 @@ class GetThreadUseCase {
           }),
         );
 
-        return { ...commentRest, username: commentUsername, replies };
+        return {
+          ...commentRest, username: commentUsername, likeCount, replies,
+        };
       }),
     );
 
